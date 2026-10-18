@@ -1,0 +1,207 @@
+/* Paleta: branco / amarelo / azul */
+
+.root {
+    -fx-background-color: #FFFFFF;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* ============ TELAS ============ */
+
+.tela-inicial {
+    -fx-background-color: linear-gradient(to bottom, #FFFFFF 0%, #EAF2FB 100%);
+    -fx-padding: 40;
+}
+
+.tela-config {
+    -fx-background-color: #FFFFFF;
+}
+
+/* ============ TEXTOS ============ */
+
+.titulo {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0B3D91;
+}
+
+.subtitulo {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555555;
+}
+
+/* ============ BOTÕES ============ */
+
+.botao-primario {
+    -fx-background-color: #0B3D91;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 30 10 30;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.botao-primario:hover {
+    -fx-background-color: #FFC72C;
+    -fx-text-fill: #0B3D91;
+}
+
+.botao-secundario {
+    -fx-background-color: transparent;
+    -fx-text-fill: #0B3D91;
+    -fx-border-color: #0B3D91;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 8 22 8 22;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.botao-secundario:hover {
+    -fx-background-color: #FFC72C;
+    -fx-border-color: #FFC72C;
+}
+
+/* ============ CÉLULAS DO LABIRINTO ============ */
+
+.celula {
+    -fx-min-width: 60px;
+    -fx-min-height: 60px;
+    -fx-pref-width: 60px;
+    -fx-pref-height: 60px;
+    -fx-border-color: #C7D2E0;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+}
+
+.celula-livre {
+    -fx-background-color: #FFFFFF;
+}
+
+.celula-livre:hover {
+    -fx-background-color: #EAF2FB;
+}
+
+.celula-obstaculo {
+    -fx-background-color: #0B3D91;
+}
+
+.celula-inicio {
+    -fx-background-color: #2FBF71; /* verde */
+}
+
+.celula-fim {
+    -fx-background-color: #E63946; /* vermelho */
+}
+
+.tela-resultado {
+    -fx-background-color: #FFFFFF;
+}
+
+.split-pane {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 10;
+}
+
+.split-pane > .split-pane-divider {
+    -fx-background-color: #EAF2FB;
+    -fx-padding: 0 2 0 2;
+}
+
+/* ============ TELA DE RESULTADO ============ */
+
+.titulo-secao {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0B3D91;
+}
+
+.legenda-texto {
+    -fx-font-size: 12px;
+    -fx-text-fill: #555555;
+}
+
+.legenda-cor {
+    -fx-min-width: 16px;
+    -fx-min-height: 16px;
+    -fx-pref-width: 16px;
+    -fx-pref-height: 16px;
+    -fx-background-radius: 3;
+    -fx-border-radius: 3;
+    -fx-border-color: #C7D2E0;
+    -fx-border-width: 1;
+}
+
+.legenda-inicio  { -fx-background-color: #2FBF71; }
+.legenda-fim     { -fx-background-color: #E63946; }
+.legenda-caminho { -fx-background-color: #FFC72C; }
+.legenda-parede  { -fx-background-color: #0B3D91; }
+
+.scroll-arvore {
+    -fx-background-color: transparent;
+    -fx-border-color: #EAF2FB;
+    -fx-border-width: 1;
+}
+
+.scroll-arvore > .viewport {
+    -fx-background-color: #FFFFFF;
+}
+
+.legenda-caminho-extra { -fx-background-color: #FFE08A; }
+
+.aviso-sem-solucao {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #E63946;
+    -fx-background-color: #FDECEE;
+    -fx-border-color: #E63946;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-border-width: 1;
+    -fx-padding: 8 16 8 16;
+}
+
+/* ============ BOTÕES COLORIDOS (modo início/fim) ============ */
+
+.botao-modo-inicio {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2FBF71;
+    -fx-border-color: #2FBF71;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 8 22 8 22;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.botao-modo-inicio:hover {
+    -fx-background-color: #2FBF71;
+    -fx-text-fill: white;
+}
+
+.botao-modo-fim {
+    -fx-background-color: transparent;
+    -fx-text-fill: #E63946;
+    -fx-border-color: #E63946;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 8 22 8 22;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.botao-modo-fim:hover {
+    -fx-background-color: #E63946;
+    -fx-text-fill: white;
+}
+
+/* ============ SCROLL DA GRADE ============ */
+
+.scroll-grade {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-grade > .viewport {
+    -fx-background-color: #FFFFFF;
+}

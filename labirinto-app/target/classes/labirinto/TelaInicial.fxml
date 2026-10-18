@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="labirinto.view.TelaInicialController"
+      alignment="CENTER"
+      spacing="20"
+      styleClass="tela-inicial"
+      prefWidth="750" prefHeight="650">
+
+    <Label text="Simulador de Cenário do Robô"
+           styleClass="titulo"/>
+    <Label text="Resolva labirintos com busca em largura"
+           styleClass="subtitulo"/>
+
+    <Button text="Simular Cenário"
+            onAction="#abrirSimulacao"
+            styleClass="botao-primario"/>
+    <Button text="Como Funciona?"
+            onAction="#mostrarExplicacao"
+            styleClass="botao-secundario"/>
+
+    <Label text="Feito por Thiago Souza Oliveira"
+           styleClass="creditos"/>
+</VBox>

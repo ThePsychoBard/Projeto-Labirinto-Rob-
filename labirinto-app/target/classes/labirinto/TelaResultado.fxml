@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="labirinto.view.TelaResultadoController"
+            styleClass="tela-resultado"
+            prefWidth="1200" prefHeight="800">
+
+        <top>
+        <VBox spacing="4" alignment="CENTER">
+            <padding><Insets top="15" bottom="10"/></padding>
+            <Label text="Labirinto Resolvido" styleClass="titulo"/>
+            <Label text="Caminho mais curto entre o ponto inicial e o ponto final"
+                   styleClass="subtitulo"/>
+            <Label fx:id="lblEstatisticas" text="—" styleClass="subtitulo"/>
+            <Label fx:id="lblAvisoSemSolucao"
+                   text=""
+                   styleClass="aviso-sem-solucao"
+                   visible="false"
+                   managed="false"/>
+        </VBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.45">
+            <VBox spacing="10" alignment="CENTER">
+                <Label text="Labirinto Resolvido" styleClass="titulo-secao"/>
+                <Canvas fx:id="canvasLabirinto" width="480" height="480"/>
+                <HBox spacing="14" alignment="CENTER">
+                    <HBox spacing="5" alignment="CENTER">
+                        <Region styleClass="legenda-cor, legenda-inicio"/>
+                        <Label text="Início" styleClass="legenda-texto"/>
+                    </HBox>
+                    <HBox spacing="5" alignment="CENTER">
+                        <Region styleClass="legenda-cor, legenda-fim"/>
+                        <Label text="Fim" styleClass="legenda-texto"/>
+                    </HBox>
+                    <HBox spacing="5" alignment="CENTER">
+                        <Region styleClass="legenda-cor, legenda-caminho"/>
+                        <Label text="Caminho" styleClass="legenda-texto"/>
+                    </HBox>
+                    <HBox spacing="5" alignment="CENTER">
+                        <Region styleClass="legenda-cor, legenda-caminho-extra"/>
+                        <Label text="Outros ótimos" styleClass="legenda-texto"/>
+                    </HBox>
+                    <HBox spacing="5" alignment="CENTER">
+                        <Region styleClass="legenda-cor, legenda-parede"/>
+                        <Label text="Parede" styleClass="legenda-texto"/>
+                    </HBox>
+                </HBox>
+            </VBox>
+
+                        <VBox spacing="10" alignment="CENTER">
+                <Label text="Árvore de Decisão do Cenário"
+                       styleClass="titulo-secao"/>
+                <Label text="Nós em amarelo representam os caminhos ótimos"
+                       styleClass="legenda-texto"/>
+                <HBox spacing="8" alignment="CENTER">
+                    <Button text="−"     onAction="#zoomOut"  styleClass="botao-zoom"/>
+                    <Button text="100%"  onAction="#zoomReset" styleClass="botao-zoom"/>
+                    <Button text="+"     onAction="#zoomIn"   styleClass="botao-zoom"/>
+                </HBox>
+                <ScrollPane fx:id="scrollArvore"
+                            fitToWidth="false" fitToHeight="false"
+                            styleClass="scroll-arvore">
+                    <Pane fx:id="painelArvore"/>
+                </ScrollPane>
+            </VBox>
+        </SplitPane>
+    </center>
+
+        <bottom>
+        <HBox alignment="CENTER" spacing="20">
+            <padding><Insets top="10" bottom="20"/></padding>
+            <Button text="EXPORTAR LOG"   onAction="#exportarLog" styleClass="botao-secundario"/>
+            <Button text="VOLTAR AO INÍCIO" onAction="#voltar"    styleClass="botao-primario"/>
+        </HBox>
+    </bottom>
+</BorderPane>
