@@ -21,6 +21,7 @@ import javafx.stage.FileChooser;
 import labirinto.model.Estado;
 import labirinto.model.No;
 import labirinto.model.Sala;
+import labirinto.solver.AlgoritmoBusca;
 import labirinto.solver.ResultadoBusca;
 
 public class TelaResultadoController {
@@ -54,39 +55,40 @@ public class TelaResultadoController {
     private ResultadoBusca resultado;
     private double zoom = 1.0;
     private Canvas canvasArvoreAtual;
+    private AlgoritmoBusca algoritmoUsado;
 
     private int proximaColuna = 0;
 
-    public void configurar(Sala sala, Estado inicio, Estado fim, ResultadoBusca resultado) {
+    public void configurar(Sala sala, Estado inicio, Estado fim, ResultadoBusca resultado, AlgoritmoBusca algoritmo) {
         this.sala = sala;
         this.inicio = inicio;
         this.fim = fim;
         this.resultado = resultado;
+        this.algoritmoUsado = algoritmo;
 
         StringBuilder texto = new StringBuilder();
-        texto.append(String.format(
-            "Nós visitados: %d   |   Tamanho do caminho: %d   |   Caminhos ótimos: %d",
-            resultado.getNosVisitados(),
-            resultado.getTamanhoCaminho(),
-            resultado.getTotalCaminhosOtimos()
-        ));
-        if (!resultado.isEncontrou()) {
-            texto.insert(0, "Nenhum caminho encontrado. ");
+        texto.append("Algoritmo: ").append(algoritmo.getNome())
+             .append("   |   Nós visitados: ").append(resultado.getNosVisitados())
+             .append("   |   Tamanho do caminho: ").append(resultado.getTamanhoCaminho());
+        
+        // Só mostra "Caminhos ótimos" se o algoritmo garantir que são ótimos
+        if (algoritmo.garanteCaminhoOtimo()) {
+            texto.append("   |   Caminhos ótimos: ").append(resultado.getTotalCaminhosOtimos());
+        } else {
+            texto.append("   |   (DFS não garante caminho mais curto)");
         }
-        if (resultado.getTotalCaminhosOtimos() > 30) {
-            texto.append("   (exibindo os 10 primeiros)");
-        }
+
         lblEstatisticas.setText(texto.toString());
 
         // Aviso de "sem solução"
         if (resultado.isEncontrou()) {
-           lblAvisoSemSolucao.setVisible(false);
-           lblAvisoSemSolucao.setManaged(false);
+            lblAvisoSemSolucao.setVisible(false);
+            lblAvisoSemSolucao.setManaged(false);
         } else {
-           lblAvisoSemSolucao.setText("⚠  Não há solução disponível para este cenário.");
-           lblAvisoSemSolucao.setVisible(true);
-           lblAvisoSemSolucao.setManaged(true);
-    }
+            lblAvisoSemSolucao.setText("⚠  Não há solução disponível para este cenário.");
+            lblAvisoSemSolucao.setVisible(true);
+            lblAvisoSemSolucao.setManaged(true);
+        }
 
         desenharLabirinto();
         desenharArvore();

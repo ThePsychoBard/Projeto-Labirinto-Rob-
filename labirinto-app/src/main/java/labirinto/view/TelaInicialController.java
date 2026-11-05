@@ -6,7 +6,7 @@ import javafx.scene.control.Alert;
 import labirinto.model.Estado;
 import labirinto.model.Sala;
 import labirinto.solver.ResultadoBusca;
-import labirinto.solver.Resolvedor;
+import labirinto.solver.ResultadoBusca;
 
 public class TelaInicialController {
 

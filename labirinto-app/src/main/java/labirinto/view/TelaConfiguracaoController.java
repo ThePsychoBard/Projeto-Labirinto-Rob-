@@ -10,7 +10,13 @@ import javafx.scene.layout.StackPane;
 import labirinto.model.Estado;
 import labirinto.model.Sala;
 import labirinto.solver.ResultadoBusca;
-import labirinto.solver.Resolvedor;
+import labirinto.solver.AlgoritmoBusca;
+import labirinto.solver.BuscaAEstrela;
+import labirinto.solver.BuscaLargura;
+import labirinto.solver.ResultadoBusca;
+import labirinto.solver.BuscaProfundidade;
+import labirinto.solver.BuscaAEstrela;
+import javafx.scene.control.ChoiceBox;
 
 public class TelaConfiguracaoController {
 
@@ -26,6 +32,7 @@ public class TelaConfiguracaoController {
     @FXML private Button btnModoObstaculo;
     @FXML private Button btnModoInicio;
     @FXML private Button btnModoFim;
+    @FXML private ChoiceBox<AlgoritmoBusca> cbAlgoritmo;
 
     private Sala sala;
     private int dimensao;
@@ -42,6 +49,30 @@ public class TelaConfiguracaoController {
         this.fim = null;
         this.modo = Modo.OBSTACULO;
         this.celulas = new StackPane[dimensao][dimensao];
+
+        // Popula a ChoiceBox 
+        if (cbAlgoritmo.getItems().isEmpty()) {
+            // 1. Ensina a ChoiceBox a converter o objeto em texto
+            cbAlgoritmo.setConverter(new javafx.util.StringConverter<AlgoritmoBusca>() {
+                @Override
+                public String toString(AlgoritmoBusca alg) {
+                    return alg == null ? "" : alg.getNome();
+                }
+
+                @Override
+                public AlgoritmoBusca fromString(String string) {
+                    return null; 
+                }
+            });
+
+            // 2. Popula com os algoritmos
+            cbAlgoritmo.getItems().addAll(
+                new BuscaLargura(),
+                new BuscaProfundidade(),
+                new BuscaAEstrela()
+            );
+            cbAlgoritmo.getSelectionModel().selectFirst();
+        }
 
         construirGrade();
         atualizarLabelModo();
@@ -164,13 +195,16 @@ public class TelaConfiguracaoController {
             return;
         }
 
-        Resolvedor r = new Resolvedor();
-        ResultadoBusca res = r.resolver(sala, inicio, fim);
+        // Pega o algoritmo selecionado pelo usuário
+        AlgoritmoBusca algoritmo = cbAlgoritmo.getValue();
+        ResultadoBusca res = algoritmo.resolver(sala, inicio, fim);
 
         GerenciadorTelas g = GerenciadorTelas.getInstancia();
         g.trocarTela("TelaResultado");
         TelaResultadoController ctrl = (TelaResultadoController) g.getControllerAtual();
-        ctrl.configurar(sala, inicio, fim, res);
+        
+        // Passa o algoritmo para a tela de resultado saber quem resolveu
+        ctrl.configurar(sala, inicio, fim, res, algoritmo); 
     }
 
     @FXML

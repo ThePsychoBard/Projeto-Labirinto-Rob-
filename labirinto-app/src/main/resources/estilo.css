@@ -205,3 +205,19 @@
 .scroll-grade > .viewport {
     -fx-background-color: #FFFFFF;
 }
+
+/* ============ ESTILO DA TELA DE ESCOLHA ============ */
+
+.combo-algoritmo {
+    -fx-background-color: #EAF2FB;
+    -fx-border-color: #0B3D91;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 2 5 2 5;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.combo-algoritmo .label {
+    -fx-text-fill: #0B3D91;
+}

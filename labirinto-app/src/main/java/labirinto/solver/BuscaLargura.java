@@ -12,14 +12,10 @@ import labirinto.model.No;
 import labirinto.model.Sala;
 
 /**
- * Resolve o labirinto com Busca em Largura (BFS).
- * Detecta TODOS os caminhos ótimos (mesmo comprimento).
- *
- * Observação: usamos Map<Estado, profundidadeMinima> em vez de Set
- * porque um estado pode ser alcançado por caminhos de mesmo tamanho —
- * nesse caso, todos são válidos e precisam ser explorados.
+ * Busca em Largura (BFS).
+ * Garante o caminho mais curto e detecta todos os caminhos ótimos.
  */
-public class Resolvedor {
+public class BuscaLargura implements AlgoritmoBusca {
 
     private static final int[][] DIRECOES = {
         {-1, 0}, { 1, 0}, { 0,-1}, { 0, 1}
@@ -28,16 +24,30 @@ public class Resolvedor {
         "Cima", "Baixo", "Esquerda", "Direita"
     };
 
-    private static final int LIMITE_CAMINHOS = 30;
+    private static final int LIMITE_CAMINHOS = 20;
 
     private final List<String> log = new ArrayList<>();
 
+    @Override
+    public String getNome() {
+        return "Busca em Largura (BFS)";
+    }
+
+    @Override
+    public String getNomeCurto() {
+        return "BFS";
+    }
+
+    @Override
+    public boolean garanteCaminhoOtimo() {
+        return true;
+    }
+
+    @Override
     public ResultadoBusca resolver(Sala sala, Estado inicio, Estado fim) {
         log.clear();
 
         No raiz = new No(inicio, null);
-
-        // profundidade mínima conhecida de cada estado
         Map<Estado, Integer> profundidadeMin = new HashMap<>();
         Deque<No> fila = new ArrayDeque<>();
 
@@ -90,8 +100,6 @@ public class Resolvedor {
                     log.add("  >>> Mais um caminho ótimo encontrado! "
                             + "(total parcial: " + totalCaminhosOtimos + ")");
                 }
-                // NÃO expande filhos do objetivo — não faz sentido continuar
-                // a partir do destino, e evita caminhos mais longos.
                 continue;
             }
 
@@ -116,15 +124,12 @@ public class Resolvedor {
                 int profundidadeVizinho = profundidadeAtual + 1;
                 Integer minConhecido = profundidadeMin.get(vizinho);
 
-                // Regra: só ignora se já foi visto numa profundidade MENOR.
-                // Se foi visto na MESMA profundidade, é caminho alternativo → processa.
                 if (minConhecido != null && minConhecido < profundidadeVizinho) {
                     sucessoresIgnorados.add(NOMES_DIRECOES[i] + " → (" + nl + "," + nc
                             + ") já visitado em profundidade menor (" + minConhecido + ")");
                     continue;
                 }
 
-                // Atualiza a profundidade mínima (se for menor, ou se nunca viu)
                 if (minConhecido == null || profundidadeVizinho < minConhecido) {
                     profundidadeMin.put(vizinho, profundidadeVizinho);
                 }
@@ -187,9 +192,5 @@ public class Resolvedor {
         }
         sb.append("]");
         return sb.toString();
-    }
-
-    public List<String> getLog() {
-        return new ArrayList<>(log);
     }
 }

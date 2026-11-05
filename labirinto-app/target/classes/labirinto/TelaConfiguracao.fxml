@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?> 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -25,6 +26,12 @@
                 <Button text="Início"     onAction="#selecionarModoInicio"     styleClass="botao-modo-inicio"/>
                 <Button text="Fim"        onAction="#selecionarModoFim"        styleClass="botao-modo-fim"/>
                 <Button text="Limpar Tudo" onAction="#limparTudo"              styleClass="botao-secundario"/>
+            </HBox>
+            
+            <!--Seletor de Algoritmo -->
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Algoritmo de Busca:" styleClass="legenda-texto"/>
+                <ChoiceBox fx:id="cbAlgoritmo" styleClass="combo-algoritmo"/>
             </HBox>
         </VBox>
     </top>
