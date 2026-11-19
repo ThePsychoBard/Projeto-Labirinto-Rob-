@@ -16,11 +16,20 @@ public interface AlgoritmoBusca {
     /** Nome curto (ex: "BFS"). */
     String getNomeCurto();
 
-    /**
+  /**
      * Indica se o algoritmo garante caminho mais curto.
      * BFS e A* retornam true; DFS retorna false.
      */
     boolean garanteCaminhoOtimo();
+
+    /**
+     * Indica se o algoritmo enumera TODOS os caminhos ótimos (só a BFS faz isso).
+     * Quando false, o resultado traz um único caminho e a contagem de
+     * "caminhos ótimos" não tem significado, então a interface não deve exibi-la.
+     */
+    default boolean enumeraCaminhosOtimos() {
+        return false;
+    }
 
     /** Resolve o labirinto e devolve o resultado. */
     ResultadoBusca resolver(Sala sala, Estado inicio, Estado fim);

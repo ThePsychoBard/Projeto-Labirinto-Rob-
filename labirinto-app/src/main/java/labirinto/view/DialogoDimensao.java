@@ -8,7 +8,7 @@ public class DialogoDimensao {
 
     /** Abre um diálogo perguntando o tamanho do labirinto. Retorna vazio se cancelar. */
     public static Optional<Integer> pedir() {
-        TextInputDialog dialog = new TextInputDialog("8");
+        TextInputDialog dialog = new TextInputDialog("4");
         dialog.setTitle("Nova Simulação");
         dialog.setHeaderText("Configurar Labirinto");
         dialog.setContentText("Dimensão (N x N):");

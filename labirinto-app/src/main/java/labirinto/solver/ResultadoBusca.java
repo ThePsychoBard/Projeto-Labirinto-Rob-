@@ -15,16 +15,30 @@ public class ResultadoBusca {
     private final boolean encontrou;
     private final List<No> caminho;                 // caminho principal (o primeiro achado)
     private final List<List<No>> caminhosOtimos;    // todos os caminhos ótimos (inclui o principal)
-    private final int totalCaminhosOtimos;          // pode ser maior que caminhosOtimos.size() se passou do limite
-    private final No raiz;
+    private final int totalCaminhosOtimos;          // quantos caminhos ótimos foram contados
+    private final boolean totalTruncado;            // true = existem MAIS caminhos ótimos além dos contados
+    private final No raiz; 
     private final int nosVisitados;
     private final int tamanhoCaminho;
     private final List<String> log;
+
 
     public ResultadoBusca(boolean encontrou,
                           List<No> caminho,
                           List<List<No>> caminhosOtimos,
                           int totalCaminhosOtimos,
+                          No raiz,
+                          int nosVisitados,
+                          List<String> log) {
+        this(encontrou, caminho, caminhosOtimos, totalCaminhosOtimos, false,
+             raiz, nosVisitados, log);
+    }
+
+    public ResultadoBusca(boolean encontrou,
+                          List<No> caminho,
+                          List<List<No>> caminhosOtimos,
+                          int totalCaminhosOtimos,
+                          boolean totalTruncado,
                           No raiz,
                           int nosVisitados,
                           List<String> log) {
@@ -34,6 +48,7 @@ public class ResultadoBusca {
             ? Collections.emptyList()
             : List.copyOf(caminhosOtimos);
         this.totalCaminhosOtimos = totalCaminhosOtimos;
+        this.totalTruncado = totalTruncado;
         this.raiz = raiz;
         this.nosVisitados = nosVisitados;
         this.tamanhoCaminho = this.caminho.isEmpty() ? 0 : this.caminho.size() - 1;
@@ -42,6 +57,7 @@ public class ResultadoBusca {
 
     public boolean isEncontrou() { return encontrou; }
     public List<No> getCaminho() { return caminho; }
+    public boolean isTotalTruncado() { return totalTruncado; }
     public List<List<No>> getCaminhosOtimos() { return caminhosOtimos; }
     public int getTotalCaminhosOtimos() { return totalCaminhosOtimos; }
     public No getRaiz() { return raiz; }

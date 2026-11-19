@@ -42,9 +42,49 @@ public class TelaConfiguracaoController {
 
     private StackPane[][] celulas;
 
+    /** Cenário novo (vazio) com a dimensão escolhida. */
     public void configurar(int dimensao) {
-        this.dimensao = dimensao;
-        this.sala = new Sala(dimensao);
+        prepararTela(new Sala(dimensao));
+    }
+
+    /**
+     * Reabre a configuração com um cenário já montado (usado pelo "Voltar" das
+     * telas de resultado e comparação). A grade volta pintada com os obstáculos,
+     * o ponto inicial, o ponto final e o algoritmo que estavam selecionados.
+     */
+    public void restaurar(Sala salaSalva, Estado inicioSalvo, Estado fimSalvo,
+                          AlgoritmoBusca algoritmoSalvo) {
+        prepararTela(salaSalva);
+
+        for (int i = 0; i < dimensao; i++) {
+            for (int j = 0; j < dimensao; j++) {
+                if (sala.isBarreira(i, j)) {
+                    trocarEstilo(new Estado(i, j), COR_LIVRE, COR_OBSTACULO);
+                }
+            }
+        }
+        if (inicioSalvo != null) {
+            inicio = inicioSalvo;
+            trocarEstilo(inicio, COR_LIVRE, COR_INICIO);
+        }
+        if (fimSalvo != null) {
+            fim = fimSalvo;
+            trocarEstilo(fim, COR_LIVRE, COR_FIM);
+        }
+        if (algoritmoSalvo != null) {
+            // Os itens da ChoiceBox são instâncias novas: compara pelo nome curto
+            for (AlgoritmoBusca a : cbAlgoritmo.getItems()) {
+                if (a.getNomeCurto().equals(algoritmoSalvo.getNomeCurto())) {
+                    cbAlgoritmo.getSelectionModel().select(a);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void prepararTela(Sala novaSala) {
+        this.sala = novaSala;
+        this.dimensao = novaSala.getDimensao();
         this.inicio = null;
         this.fim = null;
         this.modo = Modo.OBSTACULO;
@@ -205,6 +245,30 @@ public class TelaConfiguracaoController {
         
         // Passa o algoritmo para a tela de resultado saber quem resolveu
         ctrl.configurar(sala, inicio, fim, res, algoritmo); 
+    }
+
+        @FXML
+    private void comparar() {
+        if (inicio == null || fim == null) {
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Atenção");
+            a.setHeaderText(null);
+            a.setContentText("Defina o ponto inicial e o final antes de comparar.");
+            a.showAndWait();
+            return;
+        }
+
+        // 1. Roda os três algoritmos no mesmo cenário
+        ResultadoBusca resBfs = new BuscaLargura().resolver(sala, inicio, fim);
+        ResultadoBusca resDfs = new BuscaProfundidade().resolver(sala, inicio, fim);
+        ResultadoBusca resAStar = new BuscaAEstrela().resolver(sala, inicio, fim);
+
+        // 2. Abre a tela de comparação e passa os resultados
+        GerenciadorTelas g = GerenciadorTelas.getInstancia();
+        g.trocarTela("TelaComparacao");
+        TelaComparacaoController ctrl = (TelaComparacaoController) g.getControllerAtual();
+        ctrl.configurar(sala, inicio, fim, cbAlgoritmo.getValue(),
+                       resBfs, resDfs, resAStar);
     }
 
     @FXML

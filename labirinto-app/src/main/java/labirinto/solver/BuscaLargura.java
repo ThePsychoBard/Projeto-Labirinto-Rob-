@@ -24,7 +24,7 @@ public class BuscaLargura implements AlgoritmoBusca {
         "Cima", "Baixo", "Esquerda", "Direita"
     };
 
-    private static final int LIMITE_CAMINHOS = 20;
+    public static final int LIMITE_CAMINHOS = 20;
 
     private final List<String> log = new ArrayList<>();
 
@@ -70,16 +70,30 @@ public class BuscaLargura implements AlgoritmoBusca {
         log.add("");
 
         while (!fila.isEmpty()) {
+            
+            // Evita que o sistema trave em tabuleiros muito abertos (ex: 8x8 vazio)
+            if (profundidadeOtima >= 0) {
+                No proximoDaFila = fila.peek();
+                if (proximoDaFila != null) {
+                    int proxProfundidade = proximoDaFila.caminhoAteRaiz().size() - 1;
+                    
+                    // Para se já temos o limite de caminhos OU se o próximo nó é mais longo que a solução
+                                        if (totalCaminhosOtimos >= LIMITE_CAMINHOS) {
+                        log.add("--- Parando: limite de " + LIMITE_CAMINHOS
+                                + " caminhos ótimos atingido ---");
+                        break;
+                    }
+                    if (proxProfundidade > profundidadeOtima) {
+                        log.add("--- Parando: os nós restantes na fila são mais profundos que a solução ---");
+                        break;
+                    }
+                }
+            }
+
             No atual = fila.poll();
             nosVisitados++;
 
             int profundidadeAtual = atual.caminhoAteRaiz().size() - 1;
-
-            if (profundidadeOtima >= 0 && profundidadeAtual > profundidadeOtima) {
-                log.add("--- Parando: profundidade atual " + profundidadeAtual
-                        + " > profundidade ótima " + profundidadeOtima + " ---");
-                break;
-            }
 
             iteracao++;
             log.add("--- Iteração " + iteracao + " ---");
@@ -156,15 +170,20 @@ public class BuscaLargura implements AlgoritmoBusca {
             log.add("");
         }
 
+                // Ao bater no limite, só há "mais de N" se ainda sobrar algum nó-objetivo na fila.
+        boolean totalTruncado = totalCaminhosOtimos >= LIMITE_CAMINHOS
+                && fila.stream().anyMatch(n -> n.getEstado().equals(fim));
+
         log.add("");
         if (totalCaminhosOtimos == 0) {
             log.add(">>> NENHUM CAMINHO ENCONTRADO <<<");
         } else {
             log.add(">>> BUSCA CONCLUÍDA <<<");
-            log.add("Caminhos ótimos encontrados: " + totalCaminhosOtimos);
-            if (totalCaminhosOtimos > LIMITE_CAMINHOS) {
-                log.add("(Mostrando apenas os primeiros " + LIMITE_CAMINHOS
-                        + " por limite de espaço.)");
+            if (totalTruncado) {
+                log.add("Caminhos ótimos encontrados: mais de " + LIMITE_CAMINHOS
+                        + " (exibindo os primeiros " + LIMITE_CAMINHOS + ")");
+            } else {
+                log.add("Caminhos ótimos encontrados: " + totalCaminhosOtimos);
             }
         }
 
@@ -175,6 +194,7 @@ public class BuscaLargura implements AlgoritmoBusca {
             principal,
             caminhosOtimos,
             totalCaminhosOtimos,
+            totalTruncado,
             raiz,
             nosVisitados,
             new ArrayList<>(log)

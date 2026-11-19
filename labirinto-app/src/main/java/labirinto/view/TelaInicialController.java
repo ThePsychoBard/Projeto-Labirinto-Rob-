@@ -27,11 +27,13 @@ public class TelaInicialController {
         a.setTitle("Como Funciona");
         a.setHeaderText("Simulador de Cenário do Robô");
         a.setContentText(
-                "1. Defina o tamanho do labirinto\n" +
+                "1. Defina o tamanho do labirinto (valor inteiro)\n" +
                 "2. Marque o ponto inicial, o final e os obstáculos\n" +
-                "3. O sistema resolve automaticamente via busca em largura\n" +
-                "4. Você vê o caminho no labirinto e na árvore de busca.\n" +
-                "5. Você pode exportar o log da busca feita pelo algoritmo.");
+                "3. O sistema resolve automaticamente com o algoritmo de busca que você escolher\n" +
+                "4. É possível comparar a eficiência de cada algoritmo para o seu cenário\n" +
+                "5. Você pode esboçar cenários como preferir\n" +
+                "6. Você vê o caminho no labirinto e na árvore de busca.\n" +
+                "7. Você pode exportar o log da busca feita pelo algoritmo.");
         a.showAndWait();
     }
 }

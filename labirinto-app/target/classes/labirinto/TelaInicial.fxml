@@ -14,7 +14,7 @@
 
     <Label text="Simulador de Cenário do Robô"
            styleClass="titulo"/>
-    <Label text="Resolva labirintos com busca em largura"
+    <Label text="Resolva labirintos com algoritmos de busca"
            styleClass="subtitulo"/>
 
     <Button text="Simular Cenário"

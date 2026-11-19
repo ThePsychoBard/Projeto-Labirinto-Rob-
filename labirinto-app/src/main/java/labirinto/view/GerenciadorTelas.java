@@ -7,6 +7,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import labirinto.model.Estado;
+import labirinto.model.Sala;
+import labirinto.solver.AlgoritmoBusca;
 
 /**
  * Centraliza a navegação entre telas.
@@ -64,6 +67,16 @@ public void trocarTela(String nomeFxml) {
         throw new RuntimeException("Erro ao carregar tela: " + nomeFxml, e);
     }
 }
+    /**
+     * Volta para a tela de configuração restaurando o cenário que o usuário
+     * montou (obstáculos, início, fim e algoritmo escolhido).
+     */
+    public void voltarParaConfiguracao(Sala sala, Estado inicio, Estado fim,
+                                       AlgoritmoBusca algoritmo) {
+        trocarTela("TelaConfiguracao");
+        TelaConfiguracaoController ctrl = (TelaConfiguracaoController) controllerAtual;
+        ctrl.restaurar(sala, inicio, fim, algoritmo);
+    }
 
     public Stage getStage() {
         return stage;

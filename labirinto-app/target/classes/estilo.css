@@ -161,6 +161,54 @@
     -fx-padding: 8 16 8 16;
 }
 
+/* ============ TELA DE COMPARAÇÃO ============ */
+
+.tela-comparacao {
+    -fx-background-color: linear-gradient(to bottom, #FFFFFF 0%, #EAF2FB 100%);
+}
+
+.tabela-comparacao {
+    -fx-background-color: white;
+    -fx-border-color: #C7D2E0;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-font-size: 14px;
+}
+
+.tabela-comparacao .column-header {
+    -fx-background-color: #0B3D91;
+}
+
+.tabela-comparacao .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+}
+
+.tabela-comparacao .table-row-cell {
+    -fx-cell-size: 40px;
+}
+
+.tabela-comparacao .table-row-cell:odd {
+    -fx-background-color: #F7FAFC;
+}
+
+.tabela-comparacao .table-row-cell:selected {
+    -fx-background-color: #FFC72C;
+    -fx-text-fill: #0B3D91;
+}
+
+/* Linhas de enchimento (sem dado) ficam invisíveis */
+.tabela-comparacao .table-row-cell:empty {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.tabela-comparacao .table-cell {
+    -fx-alignment: CENTER;
+    -fx-text-fill: #333333;
+}
+
 /* ============ BOTÕES COLORIDOS (modo início/fim) ============ */
 
 .botao-modo-inicio {

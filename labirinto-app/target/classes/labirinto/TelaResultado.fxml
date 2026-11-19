@@ -22,7 +22,7 @@
         <VBox spacing="4" alignment="CENTER">
             <padding><Insets top="15" bottom="10"/></padding>
             <Label text="Labirinto Resolvido" styleClass="titulo"/>
-            <Label text="Caminho mais curto entre o ponto inicial e o ponto final"
+            <Label fx:id="lblSubtitulo" text=""
                    styleClass="subtitulo"/>
             <Label fx:id="lblEstatisticas" text="—" styleClass="subtitulo"/>
             <Label fx:id="lblAvisoSemSolucao"
@@ -51,7 +51,7 @@
                         <Region styleClass="legenda-cor, legenda-caminho"/>
                         <Label text="Caminho" styleClass="legenda-texto"/>
                     </HBox>
-                    <HBox spacing="5" alignment="CENTER">
+                    <HBox fx:id="legendaOutrosOtimos" spacing="5" alignment="CENTER">
                         <Region styleClass="legenda-cor, legenda-caminho-extra"/>
                         <Label text="Outros ótimos" styleClass="legenda-texto"/>
                     </HBox>
@@ -65,7 +65,7 @@
                         <VBox spacing="10" alignment="CENTER">
                 <Label text="Árvore de Decisão do Cenário"
                        styleClass="titulo-secao"/>
-                <Label text="Nós em amarelo representam os caminhos ótimos"
+                <Label fx:id="lblLegendaArvore" text=""
                        styleClass="legenda-texto"/>
                 <HBox spacing="8" alignment="CENTER">
                     <Button text="−"     onAction="#zoomOut"  styleClass="botao-zoom"/>
@@ -84,8 +84,9 @@
         <bottom>
         <HBox alignment="CENTER" spacing="20">
             <padding><Insets top="10" bottom="20"/></padding>
-            <Button text="EXPORTAR LOG"   onAction="#exportarLog" styleClass="botao-secundario"/>
-            <Button text="VOLTAR AO INÍCIO" onAction="#voltar"    styleClass="botao-primario"/>
+            <Button text="EXPORTAR LOG"            onAction="#exportarLog"       styleClass="botao-secundario"/>
+            <Button text="VOLTAR AO INÍCIO"        onAction="#voltarInicio"      styleClass="botao-secundario"/>
+            <Button text="VOLTAR À CONFIGURAÇÃO"   onAction="#voltarConfiguracao" styleClass="botao-primario"/>
         </HBox>
     </bottom>
 </BorderPane>

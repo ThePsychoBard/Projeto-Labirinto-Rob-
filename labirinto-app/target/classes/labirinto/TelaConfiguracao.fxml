@@ -53,4 +53,13 @@
             <Button text="RESOLVER" onAction="#resolver" styleClass="botao-primario"/>
         </HBox>
     </bottom>
+
+        <bottom>
+        <HBox spacing="20" alignment="CENTER">
+            <padding><Insets top="15" bottom="20"/></padding>
+            <Button text="VOLTAR"  onAction="#voltar"   styleClass="botao-secundario"/>
+            <Button text="COMPARAR ALGORITMOS" onAction="#comparar" styleClass="botao-secundario"/>
+            <Button text="RESOLVER" onAction="#resolver" styleClass="botao-primario"/>
+        </HBox>
+    </bottom>
 </BorderPane>

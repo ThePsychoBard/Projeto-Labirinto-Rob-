@@ -85,7 +85,6 @@ public class BuscaAEstrela implements AlgoritmoBusca {
         while (!abertos.isEmpty()) {
             NoAEstrela atualA = abertos.poll();
             No atual = atualA.no;
-            iteracao++;
 
             // Se já foi fechado (visitado), ignora. Isso pode acontecer se 
             // colocamos o mesmo nó várias vezes na fila com custos diferentes.
@@ -93,6 +92,7 @@ public class BuscaAEstrela implements AlgoritmoBusca {
                 continue;
             }
 
+            iteracao++;
             fechados.add(atual.getEstado());
             nosVisitados++;
 

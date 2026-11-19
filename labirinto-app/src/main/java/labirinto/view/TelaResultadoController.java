@@ -16,6 +16,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 
 import labirinto.model.Estado;
@@ -46,6 +47,9 @@ public class TelaResultadoController {
     @FXML private Canvas canvasLabirinto;
     @FXML private Pane painelArvore;
     @FXML private Label lblEstatisticas;
+    @FXML private Label lblSubtitulo;
+    @FXML private Label lblLegendaArvore;
+    @FXML private HBox legendaOutrosOtimos;
     @FXML private Label lblAvisoSemSolucao;
     @FXML private javafx.scene.control.ScrollPane scrollArvore;
 
@@ -68,17 +72,27 @@ public class TelaResultadoController {
 
         StringBuilder texto = new StringBuilder();
         texto.append("Algoritmo: ").append(algoritmo.getNome())
-             .append("   |   Nós visitados: ").append(resultado.getNosVisitados())
-             .append("   |   Tamanho do caminho: ").append(resultado.getTamanhoCaminho());
-        
-        // Só mostra "Caminhos ótimos" se o algoritmo garantir que são ótimos
-        if (algoritmo.garanteCaminhoOtimo()) {
-            texto.append("   |   Caminhos ótimos: ").append(resultado.getTotalCaminhosOtimos());
+             .append("   |   Nós visitados: ").append(resultado.getNosVisitados());
+
+        if (!resultado.isEncontrou()) {
+            texto.append("   |   Nenhum caminho encontrado");
+        } else if (algoritmo.enumeraCaminhosOtimos()) {
+            // Só a BFS enumera caminhos ótimos
+            texto.append("   |   Tamanho do caminho: ").append(resultado.getTamanhoCaminho())
+                 .append("   |   Caminhos ótimos: ").append(descreverQuantidadeOtimos());
         } else {
-            texto.append("   |   (DFS não garante caminho mais curto)");
+            texto.append("   |   ").append(descreverCaminhoEncontrado());
         }
 
         lblEstatisticas.setText(texto.toString());
+
+        lblSubtitulo.setText(textoSubtitulo());
+        lblLegendaArvore.setText(textoLegendaArvore());
+
+        // "Outros ótimos" só faz sentido quando a BFS achou mais de um caminho
+        boolean haOutrosOtimos = resultado.getCaminhosOtimos().size() > 1;
+        legendaOutrosOtimos.setVisible(haOutrosOtimos);
+        legendaOutrosOtimos.setManaged(haOutrosOtimos);
 
         // Aviso de "sem solução"
         if (resultado.isEncontrou()) {
@@ -97,6 +111,49 @@ public class TelaResultadoController {
     // ============================================================
     // LABIRINTO
     // ============================================================
+
+        /** "20", "1" ou "mais de 20 (exibindo os primeiros 20)". */
+    private String descreverQuantidadeOtimos() {
+        if (resultado.isTotalTruncado()) {
+            int exibidos = resultado.getCaminhosOtimos().size();
+            return "mais de " + exibidos + " (exibindo os primeiros " + exibidos + ")";
+        }
+        return String.valueOf(resultado.getTotalCaminhosOtimos());
+    }
+
+        /** "Caminho encontrado (N passos)", com ressalva se o algoritmo não garante o menor. */
+    private String descreverCaminhoEncontrado() {
+        int passos = resultado.getTamanhoCaminho();
+        String texto = "Caminho encontrado (" + passos + (passos == 1 ? " passo" : " passos");
+        if (!algoritmoUsado.garanteCaminhoOtimo()) {
+            texto += ", pode não ser o mais curto";
+        }
+        return texto + ")";
+    }
+
+    private String textoSubtitulo() {
+        if (!resultado.isEncontrou()) {
+            return "Não foi possível chegar ao ponto final a partir do ponto inicial";
+        }
+        if (algoritmoUsado.garanteCaminhoOtimo()) {
+            return "Caminho mais curto entre o ponto inicial e o ponto final";
+        }
+        return "Caminho encontrado entre o ponto inicial e o ponto final "
+             + "(não necessariamente o mais curto)";
+    }
+
+    private String textoLegendaArvore() {
+        if (!resultado.isEncontrou()) {
+            return "Sem solução: nenhum nó da árvore está destacado";
+        }
+        if (algoritmoUsado.enumeraCaminhosOtimos()) {
+            return "Nós em amarelo representam os caminhos ótimos";
+        }
+        if (algoritmoUsado.garanteCaminhoOtimo()) {
+            return "Nós em amarelo representam o caminho ótimo encontrado";
+        }
+        return "Nós em amarelo representam o caminho encontrado";
+    }
 
     private void desenharLabirinto() {
         int n = sala.getDimensao();
@@ -163,49 +220,66 @@ public class TelaResultadoController {
     // ============================================================
 
     private void desenharArvore() {
-    if (resultado.getRaiz() == null) return;
+        if (resultado.getRaiz() == null) return;
 
-    proximaColuna = 0;
-    calcularPosicoes(resultado.getRaiz(), 0);
+        proximaColuna = 0;
+        calcularPosicoes(resultado.getRaiz(), 0);
 
-    double maxX = 0, maxY = 0;
-    for (No no : todosOsNos(resultado.getRaiz())) {
-        maxX = Math.max(maxX, no.getX() * ESPACO_HORIZONTAL);
-        maxY = Math.max(maxY, no.getY() * ESPACO_VERTICAL);
-    }
-
-    double largura = maxX + ESPACO_HORIZONTAL * 2;
-    double altura  = maxY + ESPACO_VERTICAL * 2;
-
-    Canvas canvas = new Canvas(largura, altura);
-    painelArvore.getChildren().setAll(canvas);
-
-    GraphicsContext g = canvas.getGraphicsContext2D();
-    g.clearRect(0, 0, largura, altura);
-    g.setTextAlign(TextAlignment.CENTER);
-    g.setFont(Font.font("Segoe UI", 9));
-
-    List<No> nosDosCaminhos = new ArrayList<>();
-    for (List<No> c : resultado.getCaminhosOtimos()) {
-        for (No no : c) {
-            if (!nosDosCaminhos.contains(no)) nosDosCaminhos.add(no);
+        double maxX = 0, maxY = 0;
+        for (No no : todosOsNos(resultado.getRaiz())) {
+            maxX = Math.max(maxX, no.getX() * ESPACO_HORIZONTAL);
+            maxY = Math.max(maxY, no.getY() * ESPACO_VERTICAL);
         }
-    }
-    List<No> principal = resultado.getCaminho();
 
-    for (No no : todosOsNos(resultado.getRaiz())) {
-        for (No filho : no.getFilhos()) {
-            desenharLinha(g, no, filho, nosDosCaminhos, principal);
+        double largura = maxX + ESPACO_HORIZONTAL * 2;
+        double altura  = maxY + ESPACO_VERTICAL * 2;
+
+        Canvas canvas = new Canvas(largura, altura);
+        painelArvore.getChildren().setAll(canvas);
+
+        GraphicsContext g = canvas.getGraphicsContext2D();
+        g.clearRect(0, 0, largura, altura);
+        g.setTextAlign(TextAlignment.CENTER);
+        g.setFont(Font.font("Segoe UI", 9));
+
+        // --- INÍCIO DA LÓGICA DE AUTO-SCALE ---
+        double larguraPainel = 650;
+        double alturaPainel  = 650;
+        double escala = Math.min(larguraPainel / largura, alturaPainel / altura);
+        
+        // Só aplica a escala se ela for pelo menos 0.4 (evita o bug gráfico do JavaFX)
+        if (escala < 1 && escala >= 0.4) {
+            canvas.setScaleX(escala);
+            canvas.setScaleY(escala);
+            canvas.setTranslateX((larguraPainel - largura * escala) / 2);
+            canvas.setTranslateY((alturaPainel  - altura  * escala) / 2);
         }
-    }
-    for (No no : todosOsNos(resultado.getRaiz())) {
-        desenharNo(g, no, nosDosCaminhos, principal);
-    }
+        // --- FIM DA LÓGICA DE AUTO-SCALE ---
 
-    // Guarda o canvas pra aplicar zoom depois
-    this.canvasArvoreAtual = canvas;
-    aplicarZoom();
-}
+        List<No> nosDosCaminhos = new ArrayList<>();
+        for (List<No> c : resultado.getCaminhosOtimos()) {
+            for (No no : c) {
+                if (!nosDosCaminhos.contains(no)) nosDosCaminhos.add(no);
+            }
+        }
+        List<No> principal = resultado.getCaminho();
+
+        for (No no : todosOsNos(resultado.getRaiz())) {
+            for (No filho : no.getFilhos()) {
+                desenharLinha(g, no, filho, nosDosCaminhos, principal);
+            }
+        }
+        for (No no : todosOsNos(resultado.getRaiz())) {
+            desenharNo(g, no, nosDosCaminhos, principal);
+        }
+
+        // Guarda o canvas pra aplicar zoom depois
+        this.canvasArvoreAtual = canvas;
+        
+        // Zera o zoom manual e aplica
+        zoom = 1.0; 
+        aplicarZoom();
+    }
 
     private void calcularPosicoes(No no, int profundidade) {
         no.setY(profundidade);
@@ -312,11 +386,6 @@ public class TelaResultadoController {
         sb.append("  LABIRINTO RESOLVIDO — LOG DA SOLUÇÃO\n");
         sb.append("==================================================\n\n");
 
-        sb.append("Dimensão do labirinto: ")
-          .append(sala.getDimensao()).append("x").append(sala.getDimensao()).append("\n");
-        sb.append("Posição inicial: ").append(inicio).append("\n");
-        sb.append("Posição final:   ").append(fim).append("\n\n");
-
         sb.append("==================================================\n");
         sb.append("  PASSO A PASSO DA BUSCA\n");
         sb.append("==================================================\n\n");
@@ -325,22 +394,34 @@ public class TelaResultadoController {
         }
         sb.append("\n");
 
+        boolean mostrarContagemOtimos = algoritmoUsado.enumeraCaminhosOtimos();
+
         sb.append("==================================================\n");
-        sb.append("  CAMINHOS ÓTIMOS\n");
+        sb.append(mostrarContagemOtimos ? "  CAMINHOS ÓTIMOS\n" : "  CAMINHO ENCONTRADO\n");
         sb.append("==================================================\n\n");
 
         int total = resultado.getTotalCaminhosOtimos();
-        if (total == 0) {
+        if (!resultado.isEncontrou()) {
             sb.append("Nenhum caminho foi encontrado entre o início e o fim.\n\n");
+        } else if (!mostrarContagemOtimos) {
+            // DFS e A*: um único caminho, sem contagem de "caminhos ótimos"
+            sb.append(descreverCaminhoEncontrado()).append(".\n\n");
+            sb.append(descreverCaminho(resultado.getCaminho(), "Caminho encontrado"));
+            sb.append("\n");
         } else if (total == 1) {
             sb.append("Existe 1 caminho ótimo.\n\n");
             sb.append(descreverCaminho(resultado.getCaminhosOtimos().get(0), "Caminho único"));
+            sb.append("\n");
         } else {
-            sb.append("Existem ").append(total).append(" caminhos ótimos com o mesmo comprimento.\n");
-            if (total > resultado.getCaminhosOtimos().size()) {
-                sb.append("(Mostrando apenas os primeiros ")
-                  .append(resultado.getCaminhosOtimos().size())
+            if (resultado.isTotalTruncado()) {
+                int exibidos = resultado.getCaminhosOtimos().size();
+                sb.append("Existem mais de ").append(exibidos)
+                  .append(" caminhos ótimos com o mesmo comprimento.\n")
+                  .append("(Exibindo apenas os primeiros ").append(exibidos)
                   .append(" por limite de espaço.)\n");
+            } else {
+                sb.append("Existem ").append(total)
+                  .append(" caminhos ótimos com o mesmo comprimento.\n");
             }
             sb.append("\n");
             int idx = 0;
@@ -356,7 +437,9 @@ public class TelaResultadoController {
         sb.append("==================================================\n\n");
         sb.append("Nós visitados:        ").append(resultado.getNosVisitados()).append("\n");
         sb.append("Tamanho do caminho:   ").append(resultado.getTamanhoCaminho()).append("\n");
-        sb.append("Caminhos ótimos:      ").append(total).append("\n");
+            if (mostrarContagemOtimos) {
+            sb.append("Caminhos ótimos:      ").append(descreverQuantidadeOtimos()).append("\n");
+        }
         if (resultado.getNosVisitados() > 0 && resultado.isEncontrou()) {
             double eficiencia = 100.0 * resultado.getTamanhoCaminho() / resultado.getNosVisitados();
             sb.append(String.format("Eficiência:           %.1f%% (caminho / nós visitados)%n", eficiencia));
@@ -448,8 +531,16 @@ public class TelaResultadoController {
     canvasArvoreAtual.setTranslateY(0);
    }
 
+    /** Volta à configuração mantendo obstáculos, início, fim e algoritmo escolhidos. */
     @FXML
-    private void voltar() {
+    private void voltarConfiguracao() {
+        GerenciadorTelas.getInstancia()
+            .voltarParaConfiguracao(sala, inicio, fim, algoritmoUsado);
+    }
+
+    /** Volta à tela inicial (o cenário é descartado). */
+    @FXML
+    private void voltarInicio() {
         GerenciadorTelas.getInstancia().trocarTela("TelaInicial");
     }
 }

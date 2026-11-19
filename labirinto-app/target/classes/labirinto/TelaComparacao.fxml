@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="labirinto.view.TelaComparacaoController"
+            styleClass="tela-comparacao"
+            prefWidth="800" prefHeight="600">
+
+    <top>
+        <VBox spacing="10" alignment="CENTER">
+            <padding><Insets top="30" bottom="20"/></padding>
+            <Label text="Comparação de Algoritmos" styleClass="titulo"/>
+            
+            <Label text="Analisando o mesmo cenário com BFS, DFS e A*"
+                   styleClass="subtitulo"/>
+            
+            <Label text="Comparação baseada na eficiência de exploração (nós visitados) e na qualidade da solução (tamanho do caminho)."
+                   styleClass="legenda-texto"
+                   wrapText="true"
+                   textAlignment="CENTER"
+                   maxWidth="600"/>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="15" alignment="CENTER">
+            <padding><Insets left="20" right="20" bottom="20"/></padding>
+            
+            <TableView fx:id="tabelaComparacao" styleClass="tabela-comparacao" prefWidth="850" maxWidth="850">
+                <columns>
+                    <TableColumn fx:id="colAlgoritmo" text="Algoritmo" prefWidth="280"/>
+                    <TableColumn fx:id="colVisitados" text="Nós Visitados" prefWidth="150"/>
+                    <TableColumn fx:id="colCaminho" text="Tamanho do Caminho" prefWidth="170"/>
+                    <TableColumn fx:id="colOtimo" text="Garante o menor caminho?" prefWidth="220"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox spacing="20" alignment="CENTER">
+            <padding><Insets top="20" bottom="30"/></padding>
+            <Button text="COMO INTERPRETAR?" onAction="#mostrarAjuda" styleClass="botao-secundario"/>
+            <Button text="VOLTAR" onAction="#voltar" styleClass="botao-primario"/>
+        </HBox>
+    </bottom>
+</BorderPane>
