@@ -13,7 +13,11 @@ import javafx.scene.Node;
 import labirinto.model.Estado;
 import labirinto.model.Sala;
 import labirinto.solver.AlgoritmoBusca;
-
+import javafx.scene.control.Label;
+import javafx.scene.layout.Region;
+import labirinto.solver.BuscaAEstrela;
+import labirinto.solver.BuscaLargura;
+import labirinto.solver.BuscaProfundidade;
 import labirinto.solver.ResultadoBusca;
 
 public class TelaComparacaoController {
@@ -29,6 +33,7 @@ public class TelaComparacaoController {
     @FXML private TableColumn<LinhaComparacao, Integer> colVisitados;
     @FXML private TableColumn<LinhaComparacao, Integer> colCaminho;
     @FXML private TableColumn<LinhaComparacao, String> colOtimo;
+    @FXML private TableColumn<LinhaComparacao, String> colComplexidade;
 
     // Classe auxiliar para representar uma linha da tabela
     public static class LinhaComparacao {
@@ -36,19 +41,23 @@ public class TelaComparacaoController {
         private final SimpleIntegerProperty visitados;
         private final SimpleIntegerProperty caminho;
         private final SimpleStringProperty otimo;
+        private final SimpleStringProperty complexidade;
 
 
-        public LinhaComparacao(String algoritmo, int visitados, int caminho, String otimo) {
+        public LinhaComparacao(String algoritmo, int visitados, int caminho,
+                               String otimo, String complexidade) {
             this.algoritmo = new SimpleStringProperty(algoritmo);
             this.visitados = new SimpleIntegerProperty(visitados);
             this.caminho = new SimpleIntegerProperty(caminho);
             this.otimo = new SimpleStringProperty(otimo);
+            this.complexidade = new SimpleStringProperty(complexidade);
         }
 
         public SimpleStringProperty algoritmoProperty() { return algoritmo; }
         public SimpleIntegerProperty visitadosProperty() { return visitados; }
         public SimpleIntegerProperty caminhoProperty() { return caminho; }
         public SimpleStringProperty otimoProperty() { return otimo; }
+        public SimpleStringProperty complexidadeProperty() { return complexidade; }
     }
 
     /** Chamado pelo GerenciadorTelas antes de mostrar a tela. */
@@ -64,21 +73,25 @@ public class TelaComparacaoController {
         colVisitados.setCellValueFactory(cell -> cell.getValue().visitadosProperty().asObject());
         colCaminho.setCellValueFactory(cell -> cell.getValue().caminhoProperty().asObject());
         colOtimo.setCellValueFactory(cell -> cell.getValue().otimoProperty());
+        colComplexidade.setCellValueFactory(cell -> cell.getValue().complexidadeProperty());
 
-        // Preenche a tabela
+               // Preenche a tabela
         tabelaComparacao.setItems(FXCollections.observableArrayList(
             new LinhaComparacao("BFS (Busca em Largura)", 
                 resBfs.getNosVisitados(), 
                 resBfs.getTamanhoCaminho(), 
-                "Sim"),
+                "Sim",
+                new BuscaLargura().getComplexidade() + "*"),   // * = nota no "Como interpretar?"
             new LinhaComparacao("DFS (Busca em Profundidade)", 
                 resDfs.getNosVisitados(), 
                 resDfs.getTamanhoCaminho(), 
-                "Não"),
+                "Não",
+                new BuscaProfundidade().getComplexidade()),
             new LinhaComparacao("A* (A-Estrela)", 
                 resAStar.getNosVisitados(), 
                 resAStar.getTamanhoCaminho(), 
-                "Sim")
+                "Sim",
+                new BuscaAEstrela().getComplexidade())
         ));
 
         // Sem linhas vazias abaixo dos dados: altura = cabeçalho + linhas + bordas
@@ -111,12 +124,13 @@ public class TelaComparacaoController {
         tabelaComparacao.setMaxHeight(altura);
     }
 
-    @FXML
+        @FXML
     private void mostrarAjuda() {
         Alert a = new Alert(Alert.AlertType.INFORMATION);
         a.setTitle("Como interpretar");
         a.setHeaderText("Entendendo a tabela");
-        a.setContentText(
+
+        Label texto = new Label(
             "• Nós Visitados:\n" +
             "Quantas células o algoritmo precisou olhar até achar o destino. " +
             "Quanto menor, mais eficiente foi a busca em termos de processamento.\n\n" +
@@ -126,8 +140,19 @@ public class TelaComparacaoController {
             "• Garante o menor caminho?:\n" +
             "Indica se o algoritmo é matematicamente projetado para sempre " +
             "encontrar a rota mais curta possível (BFS e A*), ou se ele apenas " +
-            "encontra uma rota qualquer (DFS)."
+            "encontra uma rota qualquer (DFS).\n\n" +
+            "• Complexidade:\n" +
+            "Mostra como o custo cresce com o tamanho do labirinto " +
+            "(V = número de células). DFS e A* crescem de forma quase linear.\n\n" +
+            "* A BFS deste simulador enumera todos os caminhos ótimos e por isso " +
+            "cresce de forma exponencial. Uma BFS comum, que só acha o menor " +
+            "caminho, seria O(V)."
         );
+        texto.setWrapText(true);
+        texto.setPrefWidth(560);
+        texto.setMinHeight(Region.USE_PREF_SIZE);
+
+        a.getDialogPane().setContent(texto);
         a.showAndWait();
     }
 

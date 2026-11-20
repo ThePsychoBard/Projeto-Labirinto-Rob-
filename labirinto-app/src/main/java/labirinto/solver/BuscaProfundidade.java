@@ -43,6 +43,27 @@ public class BuscaProfundidade implements AlgoritmoBusca {
         return false; // DFS não garante o caminho mais curto
     }
 
+        @Override
+    public String getComplexidade() {
+        return "O(V)";
+    }
+
+    @Override
+    public String getExplicacao() {
+        return """
+            • Como funciona:
+            Segue por um caminho até não poder mais avançar e só então volta atrás para tentar outra direção. Usa uma pilha, e a ordem em que as direções são testadas decide qual caminho ela encontra.
+
+            • O que você está vendo:
+            Os nós amarelos são o caminho que ela encontrou: o primeiro que chegou ao fim, não necessariamente o mais curto.
+
+            • Atenção:
+            Poucos nós visitados não significam um bom caminho. A DFS pode visitar poucas células e mesmo assim devolver uma rota bem mais longa que a ideal. Compare o tamanho do caminho com o da BFS ou do A*.
+
+            • Complexidade:
+            O(V): cada célula é visitada no máximo uma vez. (V = número de células)""";
+    }
+
     @Override
     public ResultadoBusca resolver(Sala sala, Estado inicio, Estado fim) {
         log.clear();

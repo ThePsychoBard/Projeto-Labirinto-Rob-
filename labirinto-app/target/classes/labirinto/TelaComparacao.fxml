@@ -35,12 +35,16 @@
         <VBox spacing="15" alignment="CENTER">
             <padding><Insets left="20" right="20" bottom="20"/></padding>
             
-            <TableView fx:id="tabelaComparacao" styleClass="tabela-comparacao" prefWidth="850" maxWidth="850">
+                        <TableView fx:id="tabelaComparacao" styleClass="tabela-comparacao" prefWidth="950" maxWidth="950">
+                <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS"/>
+                </columnResizePolicy>
                 <columns>
-                    <TableColumn fx:id="colAlgoritmo" text="Algoritmo" prefWidth="280"/>
-                    <TableColumn fx:id="colVisitados" text="Nós Visitados" prefWidth="150"/>
+                    <TableColumn fx:id="colAlgoritmo" text="Algoritmo" prefWidth="260"/>
+                    <TableColumn fx:id="colVisitados" text="Nós Visitados" prefWidth="130"/>
                     <TableColumn fx:id="colCaminho" text="Tamanho do Caminho" prefWidth="170"/>
                     <TableColumn fx:id="colOtimo" text="Garante o menor caminho?" prefWidth="220"/>
+                    <TableColumn fx:id="colComplexidade" text="Complexidade" prefWidth="170"/>
                 </columns>
             </TableView>
         </VBox>

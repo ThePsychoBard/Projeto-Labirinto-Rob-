@@ -31,6 +31,16 @@ public interface AlgoritmoBusca {
         return false;
     }
 
+        /** Ordem de complexidade resumida, para exibir na tabela (ex: "O(V)"). */
+    String getComplexidade();
+
+    /**
+     * Texto "Como interpretar" desta busca, em itens iniciados por "•".
+     * Descreve o que é fixo no algoritmo; os números da execução atual
+     * são acrescentados pela tela.
+     */
+    String getExplicacao();
+
     /** Resolve o labirinto e devolve o resultado. */
     ResultadoBusca resolver(Sala sala, Estado inicio, Estado fim);
 }

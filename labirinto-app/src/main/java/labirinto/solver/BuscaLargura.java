@@ -43,6 +43,28 @@ public class BuscaLargura implements AlgoritmoBusca {
         return true;
     }
 
+        @Override
+    public String getComplexidade() {
+        return "Exponencial";
+    }
+
+    @Override
+    public String getExplicacao() {
+        return """
+            • Como funciona:
+            Explora o labirinto em "ondas": primeiro as células a 1 passo do início, depois as a 2 passos, e assim por diante. Por isso, o primeiro caminho que chega ao fim é um dos mais curtos.
+
+            • O que você está vendo:
+            Os nós amarelos são os caminhos ótimos (todos com o mesmo número de passos), até o limite de %d. Se existirem mais, a tela avisa "mais de %d".
+
+            • Nós visitados:
+            Nesta BFS, uma mesma célula pode virar vários nós, um para cada caminho mais curto que chega até ela. Por isso o número de nós pode ser maior que o de células.
+
+            • Complexidade:
+            Cresce de forma exponencial com o tamanho do labirinto, porque o simulador guarda todos os caminhos mais curtos para poder listá-los. Uma BFS que só procura o menor caminho seria O(V). (V = número de células)"""
+            .formatted(LIMITE_CAMINHOS, LIMITE_CAMINHOS);
+    }
+
     @Override
     public ResultadoBusca resolver(Sala sala, Estado inicio, Estado fim) {
         log.clear();

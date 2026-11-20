@@ -44,6 +44,27 @@ public class BuscaAEstrela implements AlgoritmoBusca {
         return true;
     }
 
+        @Override
+    public String getComplexidade() {
+        return "O(V log V)";
+    }
+
+    @Override
+    public String getExplicacao() {
+        return """
+            • Como funciona:
+            Escolhe sempre o próximo nó pela menor soma f = g + h, em que g é o número de passos já dados e h é uma estimativa do que falta (a distância de Manhattan até o fim, que ignora as paredes). Isso a empurra em direção ao objetivo.
+
+            • O que você está vendo:
+            Os nós amarelos são o caminho encontrado, que tem o menor número de passos possível. Podem existir outros igualmente curtos; o A* mostra um deles.
+
+            • Nós visitados:
+            Costuma ser menor que na BFS, porque a estimativa evita explorar regiões que se afastam do fim. Quando as paredes obrigam desvios, a estimativa ajuda menos e ele visita mais.
+
+            • Complexidade:
+            O(V log V): cada célula entra poucas vezes na fila de prioridade (no máximo uma por vizinho), e cada operação custa log V. (V = número de células)""";
+    }
+
     // Classe auxiliar para a fila de prioridade
     private static class NoAEstrela {
         No no;

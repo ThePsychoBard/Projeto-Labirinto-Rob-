@@ -18,6 +18,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
+import javafx.scene.layout.Region;
 
 import labirinto.model.Estado;
 import labirinto.model.No;
@@ -542,5 +543,47 @@ public class TelaResultadoController {
     @FXML
     private void voltarInicio() {
         GerenciadorTelas.getInstancia().trocarTela("TelaInicial");
+    }
+
+        /** Abre o "Como interpretar" do algoritmo que gerou este resultado. */
+    @FXML
+    private void mostrarAjuda() {
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+        alerta.setTitle("Como interpretar");
+        alerta.setHeaderText("Como interpretar: " + algoritmoUsado.getNome());
+
+        // Label com quebra de linha e largura fixa: o texto é longo e o
+        // setContentText costuma cortá-lo com "..." em algumas máquinas.
+        Label texto = new Label(algoritmoUsado.getExplicacao() + "\n\n" + textoNestaExecucao());
+        texto.setWrapText(true);
+        texto.setPrefWidth(600);
+        texto.setMinHeight(Region.USE_PREF_SIZE);
+
+        alerta.getDialogPane().setContent(texto);
+        alerta.showAndWait();
+    }
+
+    /** Números reais desta busca, para ligar a explicação ao que o usuário vê. */
+    private String textoNestaExecucao() {
+        String cabecalho = "• Nesta execução:\n";
+        if (!resultado.isEncontrou()) {
+            return cabecalho + "Nenhum caminho existe entre o início e o fim. Foram visitados "
+                 + resultado.getNosVisitados() + " nós até esgotar as possibilidades.";
+        }
+        return cabecalho + resultado.getNosVisitados() + " nós visitados em um labirinto de "
+             + contarCelulasLivres() + " células livres.";
+    }
+
+    /** Células que não são parede (só elas podem ser visitadas). */
+    private int contarCelulasLivres() {
+        int livres = 0;
+        for (int i = 0; i < sala.getDimensao(); i++) {
+            for (int j = 0; j < sala.getDimensao(); j++) {
+                if (!sala.isBarreira(i, j)) {
+                    livres++;
+                }
+            }
+        }
+        return livres;
     }
 }
